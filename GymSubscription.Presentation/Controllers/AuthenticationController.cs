@@ -35,5 +35,16 @@ namespace GymSubscription.Presentation.Controllers
             }
             return StatusCode(201);
         }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Authenticate(UserForAuthenticationDto userForAuthenticationDto)
+        {
+            if(!await _service.AuthenticationService.ValidateUser(userForAuthenticationDto))
+                return Unauthorized();
+
+            var tokenDto = await _service.AuthenticationService.CreateToken(populateExp: true);
+
+            return Ok(tokenDto);
+        }
     }
 }

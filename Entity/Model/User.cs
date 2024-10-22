@@ -16,6 +16,9 @@ namespace Entity.Model
         public DateTime CreatedAt { get; set; } 
         public DateTime UpdatedAt { get; set; }
 
+        public string? RefreshToken { get; set; }
+        public DateTime RefreshTokenExpiryTime { get; set; }
+
         public ICollection<Attendance>? Attendances { get; set; }
         public ICollection<Subscription>? Subscription { get; set; }
     }

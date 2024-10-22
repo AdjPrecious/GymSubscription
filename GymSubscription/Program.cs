@@ -8,6 +8,7 @@ LogManager.LoadConfiguration(string.Concat(Directory.GetCurrentDirectory(),
 // Add services to the container.
 builder.Services.ConfigureSwagger();
 builder.Services.ConfigureSqlContext(builder.Configuration);
+builder.Services.ConfigureJWT(builder.Configuration);
 builder.Services.ConfigureIdentity();
 builder.Services.ConfigureRepositoryManager();
 builder.Services.ConfigureLoggerService();
