@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Contract
+namespace Service.Contracts
 {
-    internal class RepositoryManager
+    public interface IPlanService
     {
     }
 }

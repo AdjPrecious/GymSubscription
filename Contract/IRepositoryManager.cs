@@ -9,6 +9,7 @@ namespace Contract
     public interface IRepositoryManager
     {
         ISubscriptionRepository Subscription {  get; }
+        IPlanRespository Plan { get; }
         Task SavechagesAsync();
 
     }

@@ -1,11 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
-using Shared.DataTransferObjects;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Shared.DataTransferObjects.UserDto;
 
 namespace GymSubscription.Presentation.Controllers
 {
@@ -20,13 +16,15 @@ namespace GymSubscription.Presentation.Controllers
             _service = service;
         }
 
+
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> RegisterUser(UserForRegistrationDto userForRegistrationDto)
         {
             var result = await _service.AuthenticationService.RegisterUser(userForRegistrationDto);
             if (!result.Succeeded)
             {
-                foreach(var error in result.Errors)
+                foreach (var error in result.Errors)
                 {
                     ModelState.TryAddModelError(error.Code, error.Description);
                 }
@@ -39,12 +37,63 @@ namespace GymSubscription.Presentation.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Authenticate(UserForAuthenticationDto userForAuthenticationDto)
         {
-            if(!await _service.AuthenticationService.ValidateUser(userForAuthenticationDto))
+            if (!await _service.AuthenticationService.ValidateUser(userForAuthenticationDto))
                 return Unauthorized();
 
             var tokenDto = await _service.AuthenticationService.CreateToken(populateExp: true);
 
             return Ok(tokenDto);
         }
+
+        [HttpPost("forgotpassword")]
+        [AllowAnonymous]
+        public async Task<IActionResult> ForgotPassword(string emailOrUserName)
+        {
+
+
+            var result = await _service.AuthenticationService.ForgotPassword(emailOrUserName);
+            if (result is null)
+                return BadRequest(ModelState);
+
+            return Ok(result);
+        }
+
+        [HttpPost("resetpassword")]
+        [AllowAnonymous]
+        public async Task<IActionResult> ResetPassword(PasswordResetDto resetPassword)
+        {
+            var result = await _service.AuthenticationService.ResetPassword(resetPassword);
+
+            if (!result.Succeeded)
+            {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.TryAddModelError(error.Code, error.Description);
+                }
+                return BadRequest(ModelState);
+            }
+
+            return StatusCode(201);
+        }
+
+        [Authorize(AuthenticationSchemes = "Bearer")]
+        [HttpPost("changepassword")]
+        public async Task<IActionResult> ChangePassword(ChangePasswordDto changePasswordDto)
+        {
+
+            var result = await _service.AuthenticationService.ChangePassword(changePasswordDto);
+            if (!result.Succeeded)
+            {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.TryAddModelError(error.Code, error.Description);
+                }
+                return BadRequest(ModelState);
+            }
+            return StatusCode(201);
+        }
+
+       
     }
 }
+

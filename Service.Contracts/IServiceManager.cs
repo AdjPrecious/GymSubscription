@@ -10,5 +10,7 @@ namespace Service.Contracts
     {
         ISubscriptionService SubscriptionService { get; }
         IAuthenticationService AuthenticationService { get; }
+        IPlanService PlanService { get; }
+
     }
 }

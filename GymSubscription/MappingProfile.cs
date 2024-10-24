@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Entity.Model;
-using Shared.DataTransferObjects;
+using Shared.DataTransferObjects.PlanDto;
+using Shared.DataTransferObjects.UserDto;
 
 namespace GymSubscription
 {
@@ -8,8 +9,19 @@ namespace GymSubscription
     {
         public MappingProfile()
         {
+                /*User Map*/
+
             CreateMap<UserForRegistrationDto, User>()
                 .ForMember(c => c.CreatedAt, opt => opt.MapFrom(_ => DateTime.Now));
+
+            CreateMap<UpdateUserDto, User>().ForMember(c => c.UpdatedAt, opt => opt.MapFrom(_ => DateTime.Now));
+
+            /*Plan Map*/
+            CreateMap<Plan, PlanDto>();
+            
+            CreateMap<CreatePlanDto, Plan>().ForMember(p => p.CreatedAt, opt => opt.MapFrom(_=> DateTime.Now));
+
+           
         }
 
 

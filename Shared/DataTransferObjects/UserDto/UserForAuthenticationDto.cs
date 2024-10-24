@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Service.Contracts
+namespace Shared.DataTransferObjects.UserDto
 {
     public record UserForAuthenticationDto
     {

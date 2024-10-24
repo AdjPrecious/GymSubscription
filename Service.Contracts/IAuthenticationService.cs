@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Shared.DataTransferObjects;
+using Shared.DataTransferObjects.UserDto;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,5 +15,14 @@ namespace Service.Contracts
         Task<bool> ValidateUser(UserForAuthenticationDto userForAuthenticationDto);
         
         Task<TokenDto> CreateToken(bool populateExp);
+        Task<TokenDto> RefreshToken(TokenDto tokenDto);
+
+        Task<string> ForgotPassword(string email);
+
+        Task<IdentityResult> ResetPassword(PasswordResetDto passwordResetDto);
+
+        Task<IdentityResult> ChangePassword(ChangePasswordDto changePasswordDto);
+
+        
     }
 }

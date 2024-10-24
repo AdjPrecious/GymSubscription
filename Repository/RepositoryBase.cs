@@ -1,4 +1,5 @@
 ﻿using Contract;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,7 +20,7 @@ namespace Repository
         public async Task CreateAsync(T entity) => await RepositoryContext.Set<T>().AddAsync(entity);
        
 
-        public  void DeleteAsync(T entity) => RepositoryContext.Set<T>().Remove(entity);
+        public  void Delete(T entity) => RepositoryContext.Set<T>().Remove(entity);
 
 
         public IQueryable<T> FindAll() => RepositoryContext.Set<T>();
@@ -28,7 +29,9 @@ namespace Repository
         public IQueryable<T> FindByCondition(Expression<Func<T, bool>> expression) => RepositoryContext.Set<T>().Where(expression);
 
 
-        public void UpdateAsync(T entity) => RepositoryContext.Update(entity);
+        public void Update(T entity) => RepositoryContext.Update(entity);
+
+        public IQueryable<T> FindChild (Expression<Func<T, bool>> expression, T entity)=> RepositoryContext.Set<T>().Where(expression).Include(expression);
         
     }
 }
