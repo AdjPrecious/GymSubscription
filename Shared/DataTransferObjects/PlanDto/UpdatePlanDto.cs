@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Shared.DataTransferObjects.PlanDto
 {
-    public record CreatePlanDto
+    public record UpdatePlanDto
     {
         [MaxLength(100)]
         [Required]

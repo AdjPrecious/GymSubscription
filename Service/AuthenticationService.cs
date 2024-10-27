@@ -26,16 +26,23 @@ namespace Service
         private readonly ILoggerManager _logger;
         private readonly IMapper _mapper;
         private readonly UserManager<User> _userManager;
+        private readonly RoleManager<User> _roleManager;
         private readonly IOptions<JwtConfiguration> _configuration;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly JwtConfiguration _jwtConfiguration;
         private User? _user;
 
-        public AuthenticationService(ILoggerManager logger, IMapper mapper, UserManager<User> userManager, IOptions<JwtConfiguration> configuration, IHttpContextAccessor httpContextAccessor)
+        public AuthenticationService(ILoggerManager logger,
+                                     IMapper mapper,
+                                     UserManager<User> userManager,
+                                     
+                                     IOptions<JwtConfiguration> configuration,
+                                     IHttpContextAccessor httpContextAccessor)
         {
             _logger = logger;
             _mapper = mapper;
             _userManager = userManager;
+           
             _configuration = configuration;
             _httpContextAccessor = httpContextAccessor;
             _jwtConfiguration = _configuration.Value;
@@ -48,6 +55,7 @@ namespace Service
             
 
             var result = await _userManager.CreateAsync(user, userForRegistrationDto.Password);
+            
 
             if (result.Succeeded) 
                 await _userManager.AddToRoleAsync(user, userForRegistrationDto.Role);

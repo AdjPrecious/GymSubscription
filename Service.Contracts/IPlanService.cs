@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Shared.DataTransferObjects.PlanDto;
 
-namespace Service.Contracts
+namespace Service
 {
     public interface IPlanService
     {
+        Task<IEnumerable<PlanDto>> GetAllPlansAsync();
+        Task<PlanDto> CreatePlanAsync(CreatePlanDto createPlanDto);
+        Task<PlanDto> GetPlanByIdAsync(Guid id);
+        Task UpdatePlan(Guid PlanId, UpdatePlanDto updatePlanDto);
+        Task DeletePlanAsync(Guid id);
     }
 }

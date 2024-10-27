@@ -21,6 +21,8 @@ namespace GymSubscription
             
             CreateMap<CreatePlanDto, Plan>().ForMember(p => p.CreatedAt, opt => opt.MapFrom(_=> DateTime.Now));
 
+            CreateMap<UpdatePlanDto, Plan>();
+
            
         }
 

@@ -17,8 +17,8 @@ namespace GymSubscription.Presentation.Controllers
         }
 
 
-        [Authorize]
-        [HttpPost]
+        [AllowAnonymous]
+        [HttpPost("RegisterUser")]
         public async Task<IActionResult> RegisterUser(UserForRegistrationDto userForRegistrationDto)
         {
             var result = await _service.AuthenticationService.RegisterUser(userForRegistrationDto);
@@ -45,8 +45,8 @@ namespace GymSubscription.Presentation.Controllers
             return Ok(tokenDto);
         }
 
-        [HttpPost("forgotpassword")]
         [AllowAnonymous]
+        [HttpPost("forgotpassword")]
         public async Task<IActionResult> ForgotPassword(string emailOrUserName)
         {
 
@@ -58,8 +58,8 @@ namespace GymSubscription.Presentation.Controllers
             return Ok(result);
         }
 
-        [HttpPost("resetpassword")]
         [AllowAnonymous]
+        [HttpPost("resetpassword")]
         public async Task<IActionResult> ResetPassword(PasswordResetDto resetPassword)
         {
             var result = await _service.AuthenticationService.ResetPassword(resetPassword);

@@ -9,7 +9,7 @@ namespace Shared.DataTransferObjects.PlanDto
 {
     public record PlanDto
     {
-       
+       public Guid PlanId { get; set; }
         public string? PlanName { get; init; }
         
         public float Price { get; init; }
