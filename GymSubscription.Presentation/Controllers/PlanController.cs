@@ -47,9 +47,9 @@ namespace GymSubscription.Presentation.Controllers
         }
 
         [HttpPut("{id:guid}", Name = "UpdatePlan")]
-        public async Task<IActionResult> UpdatePlan(Guid planId, UpdatePlanDto updatePlanDto)
+        public async Task<IActionResult> UpdatePlan(UpdatePlanDto updatePlanDto)
         {
-            await _service.PlanService.UpdatePlan(planId, updatePlanDto);
+            await _service.PlanService.UpdatePlan( updatePlanDto);
 
             return NoContent();
         }

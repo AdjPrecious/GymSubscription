@@ -9,15 +9,17 @@ namespace Shared.DataTransferObjects.PlanDto
 {
     public record PlanDto
     {
-       public Guid PlanId { get; set; }
-        public string? PlanName { get; init; }
-        
-        public float Price { get; init; }
-        
-        public int DurationInDays { get; init; }
-       
-        public string? Description { get; init; }
+        public Guid PlanId { get; set; }
+        public string? PlanName { get; set; }
+        public float Price { get; set; }
+        public int DurationInDays { get; set; }
+        public string? Description { get; set; }
 
-        public DateTime CreatedAt { get; init; }
+        
+
+       
+        
+
+       
     }
 }

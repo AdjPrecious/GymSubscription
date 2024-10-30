@@ -10,6 +10,8 @@ namespace Contract
     {
         ISubscriptionRepository Subscription {  get; }
         IPlanRespository Plan { get; }
+
+        IPaymentRepository Payment { get; }
         Task SavechagesAsync();
 
     }

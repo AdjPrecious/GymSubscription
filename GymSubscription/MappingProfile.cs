@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Entity.Model;
 using Shared.DataTransferObjects.PlanDto;
+using Shared.DataTransferObjects.SubscriptionDto;
 using Shared.DataTransferObjects.UserDto;
 
 namespace GymSubscription
@@ -22,6 +23,11 @@ namespace GymSubscription
             CreateMap<CreatePlanDto, Plan>().ForMember(p => p.CreatedAt, opt => opt.MapFrom(_=> DateTime.Now));
 
             CreateMap<UpdatePlanDto, Plan>();
+
+            /*Subscription Map*/
+            CreateMap<Subscription, SubscriptionDto>();
+
+            CreateMap<CreateSubscriptionDto, Subscription>().ForMember(s => s.CreatedAt, opt => opt.MapFrom(_ => DateTime.Now));
 
            
         }

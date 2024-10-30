@@ -1,4 +1,6 @@
-﻿namespace Entity.Model
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Entity.Model
 {
     public class Plan
     {
@@ -10,6 +12,10 @@
 
         public DateTime CreatedAt { get; set; }
 
+        
+        public Payment? Payment { get; set; }
+
         public ICollection<Subscription>? Subscriptions { get; set; }
+        
     }
 }

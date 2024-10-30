@@ -79,11 +79,11 @@ namespace Service
 
        
 
-        public async Task UpdatePlan(Guid PlanId, UpdatePlanDto updatePlanDto)
+        public async Task UpdatePlan(UpdatePlanDto updatePlanDto)
         {
-            var plan = await _repository.Plan.GetPlanAsync(PlanId);
+            var plan = await _repository.Plan.GetPlanAsync(updatePlanDto.PlanId);
             if (plan is null)
-                throw new PlanNotFoundException(PlanId);
+                throw new PlanNotFoundException(updatePlanDto.PlanId);
 
             var plans = await _repository.Plan.GetAllPlanAsync();
 

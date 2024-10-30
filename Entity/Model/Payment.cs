@@ -6,17 +6,17 @@ namespace Entity.Model
     public class Payment
     {
         public Guid PaymentID { get; set; }
-        [ForeignKey(nameof(User))]
-        public string UserID { get; set; }
-
+        public string? UserId { get; set; }
         public User? User { get; set; }
 
-        public Guid SubscriptionID { get; set; }
-        public Subscription? Subscription { get; set; }
         public float AmountPaid { get; set; }
         public DateTime PaymentDate { get; set;}
         public string? PaymentMethod {  get; set; }
-        public PaymentStatus PaymentStatus {  get; set; }
-        public DateTime CreatedAt { get;set;}   
+        public bool isSuccessfull {  get; set; }
+        public DateTime CreatedAt { get;set;}  
+        public string? TransactionReference { get; set; }
+
+        public Guid PlanID { get; set; }
+        public ICollection<Plan>? Plan { get; set; }
     }
 }

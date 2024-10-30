@@ -65,21 +65,21 @@ namespace GymSubscription.Migrations
                     b.Property<string>("PaymentMethod")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("PaymentStatus")
-                        .HasColumnType("int");
-
-                    b.Property<Guid>("SubscriptionID")
+                    b.Property<Guid>("PlanID")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("UserID")
-                        .IsRequired()
+                    b.Property<string>("TransactionReference")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("isSuccessfull")
+                        .HasColumnType("bit");
 
                     b.HasKey("PaymentID");
 
-                    b.HasIndex("SubscriptionID");
-
-                    b.HasIndex("UserID");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Payment");
                 });
@@ -99,6 +99,9 @@ namespace GymSubscription.Migrations
                     b.Property<int>("DurationInDays")
                         .HasColumnType("int");
 
+                    b.Property<Guid?>("PaymentID")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("PlanName")
                         .HasColumnType("nvarchar(max)");
 
@@ -106,6 +109,8 @@ namespace GymSubscription.Migrations
                         .HasColumnType("real");
 
                     b.HasKey("PlanID");
+
+                    b.HasIndex("PaymentID");
 
                     b.ToTable("Plans");
                 });
@@ -122,9 +127,6 @@ namespace GymSubscription.Migrations
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid?>("PaymentID")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<Guid>("PlanID")
                         .HasColumnType("uniqueidentifier");
 
@@ -137,14 +139,9 @@ namespace GymSubscription.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("UserID")
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("SubscriptionID");
 
                     b.HasIndex("PlanID");
-
-                    b.HasIndex("UserID");
 
                     b.ToTable("Subscriptions");
                 });
@@ -261,19 +258,19 @@ namespace GymSubscription.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "36294cea-ca39-4fe8-a0f0-b3badfdba0ef",
+                            Id = "752bc93b-4254-46e5-a344-d5e7eaeb4846",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "8c215806-d108-499c-b1c7-a83043c6ddcd",
+                            Id = "d6e19ca3-3cdc-4010-8ca2-cea9d7bdcb70",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "1d2cc635-b2d0-4b97-994d-c133a410ed37",
+                            Id = "7860c0d7-316d-40e0-ab6e-c9482659fd7e",
                             Name = "Trainer",
                             NormalizedName = "TRAINER"
                         });
@@ -388,7 +385,7 @@ namespace GymSubscription.Migrations
             modelBuilder.Entity("Entity.Model.Attendance", b =>
                 {
                     b.HasOne("Entity.Model.User", "User")
-                        .WithMany("Attendances")
+                        .WithMany()
                         .HasForeignKey("UserID");
 
                     b.Navigation("User");
@@ -396,21 +393,20 @@ namespace GymSubscription.Migrations
 
             modelBuilder.Entity("Entity.Model.Payment", b =>
                 {
-                    b.HasOne("Entity.Model.Subscription", "Subscription")
-                        .WithMany("Payments")
-                        .HasForeignKey("SubscriptionID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Entity.Model.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Subscription");
+                        .WithMany("Payments")
+                        .HasForeignKey("UserId");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Entity.Model.Plan", b =>
+                {
+                    b.HasOne("Entity.Model.Payment", "Payment")
+                        .WithMany("Plan")
+                        .HasForeignKey("PaymentID");
+
+                    b.Navigation("Payment");
                 });
 
             modelBuilder.Entity("Entity.Model.Subscription", b =>
@@ -421,13 +417,7 @@ namespace GymSubscription.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Entity.Model.User", "User")
-                        .WithMany("Subscription")
-                        .HasForeignKey("UserID");
-
                     b.Navigation("Plan");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -481,21 +471,19 @@ namespace GymSubscription.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Entity.Model.Payment", b =>
+                {
+                    b.Navigation("Plan");
+                });
+
             modelBuilder.Entity("Entity.Model.Plan", b =>
                 {
                     b.Navigation("Subscriptions");
                 });
 
-            modelBuilder.Entity("Entity.Model.Subscription", b =>
-                {
-                    b.Navigation("Payments");
-                });
-
             modelBuilder.Entity("Entity.Model.User", b =>
                 {
-                    b.Navigation("Attendances");
-
-                    b.Navigation("Subscription");
+                    b.Navigation("Payments");
                 });
 #pragma warning restore 612, 618
         }

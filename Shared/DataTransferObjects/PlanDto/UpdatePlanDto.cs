@@ -9,6 +9,8 @@ namespace Shared.DataTransferObjects.PlanDto
 {
     public record UpdatePlanDto
     {
+        [Required]
+        public Guid PlanId { get; set; }
         [MaxLength(100)]
         [Required]
         public string? PlanName { get; init; }

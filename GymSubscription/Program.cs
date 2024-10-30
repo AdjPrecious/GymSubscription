@@ -1,6 +1,7 @@
 using Contract;
 using GymSubscription.Extensions;
 using NLog;
+using PayStack.Net;
 
 var builder = WebApplication.CreateBuilder(args);
 LogManager.LoadConfiguration(string.Concat(Directory.GetCurrentDirectory(),

@@ -19,7 +19,7 @@ namespace Entity.Model
         public string? RefreshToken { get; set; }
         public DateTime RefreshTokenExpiryTime { get; set; }
 
-        public ICollection<Attendance>? Attendances { get; set; }
-        public ICollection<Subscription>? Subscription { get; set; }
+       
+        public ICollection<Payment>? Payments { get; set; }
     }
 }

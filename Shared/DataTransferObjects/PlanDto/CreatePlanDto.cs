@@ -9,6 +9,7 @@ namespace Shared.DataTransferObjects.PlanDto
 {
     public record CreatePlanDto
     {
+        
         [MaxLength(100)]
         [Required]
         public string? PlanName { get; init; }
@@ -19,5 +20,7 @@ namespace Shared.DataTransferObjects.PlanDto
         [MaxLength(225)]
         [Required]
         public string? Description { get; init; }
+
+
     }
 }

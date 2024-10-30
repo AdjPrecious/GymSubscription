@@ -12,8 +12,8 @@ using Repository;
 namespace GymSubscription.Migrations
 {
     [DbContext(typeof(RepositoryContext))]
-    [Migration("20241021182436_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20241029220117_initialMigration")]
+    partial class initialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -68,21 +68,20 @@ namespace GymSubscription.Migrations
                     b.Property<string>("PaymentMethod")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("PaymentStatus")
-                        .HasColumnType("int");
+                    b.Property<string>("TransactionReference")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("SubscriptionID")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("UserID")
+                    b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<bool>("isSuccessfull")
+                        .HasColumnType("bit");
+
                     b.HasKey("PaymentID");
 
-                    b.HasIndex("SubscriptionID");
-
-                    b.HasIndex("UserID");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Payment");
                 });
@@ -93,11 +92,17 @@ namespace GymSubscription.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("DurationInDays")
                         .HasColumnType("int");
+
+                    b.Property<Guid>("PaymentID")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("PlanName")
                         .HasColumnType("nvarchar(max)");
@@ -106,6 +111,8 @@ namespace GymSubscription.Migrations
                         .HasColumnType("real");
 
                     b.HasKey("PlanID");
+
+                    b.HasIndex("PaymentID");
 
                     b.ToTable("Plans");
                 });
@@ -122,9 +129,6 @@ namespace GymSubscription.Migrations
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid?>("PaymentID")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<Guid>("PlanID")
                         .HasColumnType("uniqueidentifier");
 
@@ -137,14 +141,9 @@ namespace GymSubscription.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("UserID")
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("SubscriptionID");
 
                     b.HasIndex("PlanID");
-
-                    b.HasIndex("UserID");
 
                     b.ToTable("Subscriptions");
                 });
@@ -199,6 +198,12 @@ namespace GymSubscription.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<string>("RefreshToken")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("RefreshTokenExpiryTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
@@ -255,19 +260,19 @@ namespace GymSubscription.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "a8339fa5-b349-48b7-8a02-0ebc2da3bb5a",
+                            Id = "a84780ca-4e96-4625-ba51-a184d38e19a8",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "8ba2a886-9485-45ba-bd35-a492754e2b88",
+                            Id = "79eabc60-02cb-4b74-a7ce-bfabb1777771",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "55e4b18f-5b89-4749-b54b-2efa1b9c7532",
+                            Id = "f49475a2-a7fe-4ae3-8a72-25389c514e87",
                             Name = "Trainer",
                             NormalizedName = "TRAINER"
                         });
@@ -382,7 +387,7 @@ namespace GymSubscription.Migrations
             modelBuilder.Entity("Entity.Model.Attendance", b =>
                 {
                     b.HasOne("Entity.Model.User", "User")
-                        .WithMany("Attendances")
+                        .WithMany()
                         .HasForeignKey("UserID");
 
                     b.Navigation("User");
@@ -390,21 +395,24 @@ namespace GymSubscription.Migrations
 
             modelBuilder.Entity("Entity.Model.Payment", b =>
                 {
-                    b.HasOne("Entity.Model.Subscription", "Subscription")
-                        .WithMany("Payments")
-                        .HasForeignKey("SubscriptionID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Entity.Model.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserID")
+                        .WithMany("Payments")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Subscription");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Entity.Model.Plan", b =>
+                {
+                    b.HasOne("Entity.Model.Payment", "Payment")
+                        .WithMany()
+                        .HasForeignKey("PaymentID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Payment");
                 });
 
             modelBuilder.Entity("Entity.Model.Subscription", b =>
@@ -415,13 +423,7 @@ namespace GymSubscription.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Entity.Model.User", "User")
-                        .WithMany("Subscription")
-                        .HasForeignKey("UserID");
-
                     b.Navigation("Plan");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -480,16 +482,9 @@ namespace GymSubscription.Migrations
                     b.Navigation("Subscriptions");
                 });
 
-            modelBuilder.Entity("Entity.Model.Subscription", b =>
-                {
-                    b.Navigation("Payments");
-                });
-
             modelBuilder.Entity("Entity.Model.User", b =>
                 {
-                    b.Navigation("Attendances");
-
-                    b.Navigation("Subscription");
+                    b.Navigation("Payments");
                 });
 #pragma warning restore 612, 618
         }
