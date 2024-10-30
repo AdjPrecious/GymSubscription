@@ -12,8 +12,8 @@ using Repository;
 namespace GymSubscription.Migrations
 {
     [DbContext(typeof(RepositoryContext))]
-    [Migration("20241029220117_initialMigration")]
-    partial class initialMigration
+    [Migration("20241030183649_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -68,18 +68,22 @@ namespace GymSubscription.Migrations
                     b.Property<string>("PaymentMethod")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid>("PlanID")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("TransactionReference")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<bool>("isSuccessfull")
                         .HasColumnType("bit");
 
                     b.HasKey("PaymentID");
+
+                    b.HasIndex("PlanID")
+                        .IsUnique();
 
                     b.HasIndex("UserId");
 
@@ -101,9 +105,6 @@ namespace GymSubscription.Migrations
                     b.Property<int>("DurationInDays")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("PaymentID")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("PlanName")
                         .HasColumnType("nvarchar(max)");
 
@@ -111,8 +112,6 @@ namespace GymSubscription.Migrations
                         .HasColumnType("real");
 
                     b.HasKey("PlanID");
-
-                    b.HasIndex("PaymentID");
 
                     b.ToTable("Plans");
                 });
@@ -260,19 +259,19 @@ namespace GymSubscription.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "a84780ca-4e96-4625-ba51-a184d38e19a8",
+                            Id = "58a38232-a48f-4729-bff1-9ff6e94318e9",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "79eabc60-02cb-4b74-a7ce-bfabb1777771",
+                            Id = "de99e509-86ef-4e35-9ad0-6c6201c7e512",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "f49475a2-a7fe-4ae3-8a72-25389c514e87",
+                            Id = "2ffc87eb-9245-4dd2-bd77-a10650d3735d",
                             Name = "Trainer",
                             NormalizedName = "TRAINER"
                         });
@@ -395,30 +394,25 @@ namespace GymSubscription.Migrations
 
             modelBuilder.Entity("Entity.Model.Payment", b =>
                 {
+                    b.HasOne("Entity.Model.Plan", "Plan")
+                        .WithOne("Payment")
+                        .HasForeignKey("Entity.Model.Payment", "PlanID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Entity.Model.User", "User")
                         .WithMany("Payments")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Plan");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Entity.Model.Plan", b =>
-                {
-                    b.HasOne("Entity.Model.Payment", "Payment")
-                        .WithMany()
-                        .HasForeignKey("PaymentID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Payment");
                 });
 
             modelBuilder.Entity("Entity.Model.Subscription", b =>
                 {
                     b.HasOne("Entity.Model.Plan", "Plan")
-                        .WithMany("Subscriptions")
+                        .WithMany()
                         .HasForeignKey("PlanID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -479,7 +473,7 @@ namespace GymSubscription.Migrations
 
             modelBuilder.Entity("Entity.Model.Plan", b =>
                 {
-                    b.Navigation("Subscriptions");
+                    b.Navigation("Payment");
                 });
 
             modelBuilder.Entity("Entity.Model.User", b =>

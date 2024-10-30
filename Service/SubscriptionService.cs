@@ -30,18 +30,17 @@ namespace Service
 
         public async Task<SubscriptionDto> CreateSubscription(CreateSubscriptionDto createSubscriptionDto)
         {
-            var plan = await VerifyPlan(createSubscriptionDto);
-
-            if (plan.Payment.isSuccessfull)
+            var payment = await _repository.Payment.GetPaymentAsync(createSubscriptionDto.PaymentId);
+            if (!payment.isSuccessfull)
                 throw new InvalidPaymentBadException();
                   
             var subscription = new Subscription()
             {
                 CreatedAt = DateTime.Now,
-                PlanID = plan.PlanID,
-                Plan = plan,
+                PlanID = payment.PlanID,
+                Plan = payment.Plan,
                 StartDate = DateTime.Now,
-                EndDate = DateTime.Now.AddDays(plan.DurationInDays),
+                EndDate = DateTime.Now.AddDays(payment.Plan.DurationInDays),
                 Status = SubscriptionStatus.Active,
             };
 
@@ -57,13 +56,7 @@ namespace Service
         }
 
 
-        private async Task<Plan> VerifyPlan(CreateSubscriptionDto createSubscriptionDto)
-        {
-            var plan = await _repository.Plan.GetPlanAsync(createSubscriptionDto.PlanId);
-            if (plan == null)
-                throw new PlanNotFoundException(createSubscriptionDto.PlanId);
-            return plan;
-        }
+        
 
 
         public async Task<IEnumerable<SubscriptionDto>> GetAllSubScription()

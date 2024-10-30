@@ -79,6 +79,9 @@ namespace GymSubscription.Migrations
 
                     b.HasKey("PaymentID");
 
+                    b.HasIndex("PlanID")
+                        .IsUnique();
+
                     b.HasIndex("UserId");
 
                     b.ToTable("Payment");
@@ -99,9 +102,6 @@ namespace GymSubscription.Migrations
                     b.Property<int>("DurationInDays")
                         .HasColumnType("int");
 
-                    b.Property<Guid?>("PaymentID")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("PlanName")
                         .HasColumnType("nvarchar(max)");
 
@@ -109,8 +109,6 @@ namespace GymSubscription.Migrations
                         .HasColumnType("real");
 
                     b.HasKey("PlanID");
-
-                    b.HasIndex("PaymentID");
 
                     b.ToTable("Plans");
                 });
@@ -258,19 +256,19 @@ namespace GymSubscription.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "752bc93b-4254-46e5-a344-d5e7eaeb4846",
+                            Id = "58a38232-a48f-4729-bff1-9ff6e94318e9",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "d6e19ca3-3cdc-4010-8ca2-cea9d7bdcb70",
+                            Id = "de99e509-86ef-4e35-9ad0-6c6201c7e512",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "7860c0d7-316d-40e0-ab6e-c9482659fd7e",
+                            Id = "2ffc87eb-9245-4dd2-bd77-a10650d3735d",
                             Name = "Trainer",
                             NormalizedName = "TRAINER"
                         });
@@ -393,26 +391,25 @@ namespace GymSubscription.Migrations
 
             modelBuilder.Entity("Entity.Model.Payment", b =>
                 {
+                    b.HasOne("Entity.Model.Plan", "Plan")
+                        .WithOne("Payment")
+                        .HasForeignKey("Entity.Model.Payment", "PlanID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Entity.Model.User", "User")
                         .WithMany("Payments")
                         .HasForeignKey("UserId");
 
+                    b.Navigation("Plan");
+
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Entity.Model.Plan", b =>
-                {
-                    b.HasOne("Entity.Model.Payment", "Payment")
-                        .WithMany("Plan")
-                        .HasForeignKey("PaymentID");
-
-                    b.Navigation("Payment");
                 });
 
             modelBuilder.Entity("Entity.Model.Subscription", b =>
                 {
                     b.HasOne("Entity.Model.Plan", "Plan")
-                        .WithMany("Subscriptions")
+                        .WithMany()
                         .HasForeignKey("PlanID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -471,14 +468,9 @@ namespace GymSubscription.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Entity.Model.Payment", b =>
-                {
-                    b.Navigation("Plan");
-                });
-
             modelBuilder.Entity("Entity.Model.Plan", b =>
                 {
-                    b.Navigation("Subscriptions");
+                    b.Navigation("Payment");
                 });
 
             modelBuilder.Entity("Entity.Model.User", b =>

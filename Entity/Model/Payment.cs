@@ -17,6 +17,6 @@ namespace Entity.Model
         public string? TransactionReference { get; set; }
 
         public Guid PlanID { get; set; }
-        public ICollection<Plan>? Plan { get; set; }
+        public Plan? Plan { get; set; }
     }
 }

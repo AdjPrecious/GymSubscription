@@ -15,7 +15,6 @@ namespace Entity.Model
         
         public Payment? Payment { get; set; }
 
-        public ICollection<Subscription>? Subscriptions { get; set; }
-        
+       
     }
 }

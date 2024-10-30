@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace GymSubscription.Migrations
 {
     /// <inheritdoc />
-    public partial class initialMigration : Migration
+    public partial class InitialMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -56,6 +56,22 @@ namespace GymSubscription.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Plans",
+                columns: table => new
+                {
+                    PlanID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    PlanName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Price = table.Column<float>(type: "real", nullable: false),
+                    DurationInDays = table.Column<int>(type: "int", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Plans", x => x.PlanID);
                 });
 
             migrationBuilder.CreateTable(
@@ -189,13 +205,14 @@ namespace GymSubscription.Migrations
                 columns: table => new
                 {
                     PaymentID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     AmountPaid = table.Column<float>(type: "real", nullable: false),
                     PaymentDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     PaymentMethod = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     isSuccessfull = table.Column<bool>(type: "bit", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    TransactionReference = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    TransactionReference = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PlanID = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -204,30 +221,12 @@ namespace GymSubscription.Migrations
                         name: "FK_Payment_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Plans",
-                columns: table => new
-                {
-                    PlanID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    PlanName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Price = table.Column<float>(type: "real", nullable: false),
-                    DurationInDays = table.Column<int>(type: "int", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    PaymentID = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Plans", x => x.PlanID);
+                        principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Plans_Payment_PaymentID",
-                        column: x => x.PaymentID,
-                        principalTable: "Payment",
-                        principalColumn: "PaymentID",
+                        name: "FK_Payment_Plans_PlanID",
+                        column: x => x.PlanID,
+                        principalTable: "Plans",
+                        principalColumn: "PlanID",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -259,9 +258,9 @@ namespace GymSubscription.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "79eabc60-02cb-4b74-a7ce-bfabb1777771", null, "User", "USER" },
-                    { "a84780ca-4e96-4625-ba51-a184d38e19a8", null, "Admin", "ADMIN" },
-                    { "f49475a2-a7fe-4ae3-8a72-25389c514e87", null, "Trainer", "TRAINER" }
+                    { "2ffc87eb-9245-4dd2-bd77-a10650d3735d", null, "Trainer", "TRAINER" },
+                    { "58a38232-a48f-4729-bff1-9ff6e94318e9", null, "Admin", "ADMIN" },
+                    { "de99e509-86ef-4e35-9ad0-6c6201c7e512", null, "User", "USER" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -309,14 +308,15 @@ namespace GymSubscription.Migrations
                 column: "UserID");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Payment_PlanID",
+                table: "Payment",
+                column: "PlanID",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Payment_UserId",
                 table: "Payment",
                 column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Plans_PaymentID",
-                table: "Plans",
-                column: "PaymentID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Subscriptions_PlanID",
@@ -346,19 +346,19 @@ namespace GymSubscription.Migrations
                 name: "Attendances");
 
             migrationBuilder.DropTable(
+                name: "Payment");
+
+            migrationBuilder.DropTable(
                 name: "Subscriptions");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "Plans");
-
-            migrationBuilder.DropTable(
-                name: "Payment");
-
-            migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Plans");
         }
     }
 }

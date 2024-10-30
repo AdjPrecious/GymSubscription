@@ -74,7 +74,7 @@ namespace Service
                 AmountPaid = plan.Price,
                 PaymentMethod = createPaymentDto.PaymentMethod,
                 PlanID = plan.PlanID,
-                Plan = new List<Plan> { plan },
+                Plan =  plan ,
                 UserId = user.Id,
                 User = user,
                 TransactionReference = request.Reference,

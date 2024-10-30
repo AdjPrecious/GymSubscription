@@ -10,7 +10,7 @@ namespace Shared.DataTransferObjects.SubscriptionDto
     public record CreateSubscriptionDto
     {
         [Required]
-        public Guid PlanId { get; set; }
+        public Guid PaymentId { get; set; }
         
 
       
