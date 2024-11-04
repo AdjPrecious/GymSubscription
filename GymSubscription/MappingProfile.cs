@@ -17,6 +17,8 @@ namespace GymSubscription
 
             CreateMap<UpdateUserDto, User>().ForMember(c => c.UpdatedAt, opt => opt.MapFrom(_ => DateTime.Now));
 
+            CreateMap<User, UserDto>();
+
             /*Plan Map*/
             CreateMap<Plan, PlanDto>();
             
@@ -26,8 +28,8 @@ namespace GymSubscription
 
             /*Subscription Map*/
             CreateMap<Subscription, SubscriptionDto>();
-
-            CreateMap<CreateSubscriptionDto, Subscription>().ForMember(s => s.CreatedAt, opt => opt.MapFrom(_ => DateTime.Now));
+                
+            
 
            
         }

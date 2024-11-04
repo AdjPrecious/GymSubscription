@@ -28,20 +28,23 @@ namespace Service
             _userManager = userManager;
         }
 
-        public async Task<SubscriptionDto> CreateSubscription(CreateSubscriptionDto createSubscriptionDto)
+        public async Task<SubscriptionDto> CreateSubscription(Guid paymentId)
         {
-            var payment = await _repository.Payment.GetPaymentAsync(createSubscriptionDto.PaymentId);
-            if (!payment.isSuccessfull)
-                throw new InvalidPaymentBadException();
-                  
+            var user = await GetUser();
+            var payment = await GetPayment(paymentId, user);
+            var plan = await _repository.Plan.GetPlanAsync(payment.PlanID);
+            if(plan == null)
+                throw new PlanNotFoundException(payment.PlanID);
+            
             var subscription = new Subscription()
             {
+                PaymentId = paymentId,
+                Payment = payment,
                 CreatedAt = DateTime.Now,
-                PlanID = payment.PlanID,
-                Plan = payment.Plan,
                 StartDate = DateTime.Now,
-                EndDate = DateTime.Now.AddDays(payment.Plan.DurationInDays),
+                EndDate = DateTime.Now.AddDays(plan.DurationInDays),
                 Status = SubscriptionStatus.Active,
+                
             };
 
             await _repository.Subscription.CreateSubscription(subscription);
@@ -50,32 +53,45 @@ namespace Service
             var subscriptiontomap = _mapper.Map<SubscriptionDto>(subscription);
 
             return subscriptiontomap;
+
+
+
+        }
+
+        private async Task<Payment> GetPayment(Guid paymentId, User? user)
+        {
+            var payment = await _repository.Payment.GetUserPaymentAsync(user.Id, paymentId);
+            if(payment == null)
             
-
-
+                throw new PaymentNotFoundException();
+            
+            if (!payment.isSuccessfull)
+                throw new InvalidPaymentBadException();
+            return payment;
         }
 
-
-        
-
-
-        public async Task<IEnumerable<SubscriptionDto>> GetAllSubScription()
+        private async Task<User?> GetUser()
         {
-           var subscription = await _repository.Subscription.GetAllSubscriptionAsync();
-           
-            var subscriptionDto = _mapper.Map<IEnumerable<SubscriptionDto>>(subscription);
-
-            return subscriptionDto;
-
-
+            var useremail = _httpContextAccessor.HttpContext?.User?.Identity?.Name;
+            if (useremail == null)
+                throw new UserNotLoginException();
+            var user = await _userManager.FindByEmailAsync(useremail);
+            if (user == null)
+                throw new UserNotFoundException(useremail);
+            return user;
         }
 
-        public async Task<SubscriptionDto> GetSubscriptionById(Guid subscriptionId)
+      
+
+        public async Task<SubscriptionDto> GetPaymentSubscriptionById(Guid paymentId)
         {
-            var subscription = await _repository.Subscription.GetSubscriptionByIdAsync(subscriptionId);
+            var user = await GetUser();
+            var payment = await GetPayment(paymentId, user);
+
+            var subscription = await _repository.Subscription.GetPaymentSubscriptionByIdAsync(payment.PaymentID);
 
             if (subscription == null)
-                throw new SubscriptionNotFoundException(subscriptionId);
+                throw new SubscriptionNotFoundException(payment.PaymentID);
 
             var subscriptionDto = _mapper.Map<SubscriptionDto>(subscription);
 

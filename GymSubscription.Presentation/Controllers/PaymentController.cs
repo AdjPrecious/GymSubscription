@@ -26,9 +26,17 @@ namespace GymSubscription.Presentation.Controllers
         [HttpGet("{id:guid}", Name = "GetPayment")]
         public async Task<IActionResult> GetPayment(Guid id)
         {
-            var result = await _service.PaymentService.GetPaymentAsync(id);
+            var result = await _service.PaymentService.GetUserPaymentAsync(id);
 
             return Ok(result);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetUserPayments()
+        {
+            var result = await _service.PaymentService.GetUserPaymentsAsync();
+
+            return Ok(result);  
         }
 
         [HttpPost("CreatePayment")]

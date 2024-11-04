@@ -23,26 +23,20 @@ namespace GymSubscription.Presentation.Controllers
             _service = service;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAllSubscription()
-        {
-            var subscriptions = await _service.SubscriptionService.GetAllSubScription();
-
-            return Ok(subscriptions);
-        }
+        
 
         [HttpGet("{id:guid}")]
-        public async Task<IActionResult> GetSubscription(Guid id)
+        public async Task<IActionResult> GetSubscription(Guid paymentid)
         {
-            var result = _service.SubscriptionService.GetSubscriptionById(id);
+            var result = await _service.SubscriptionService.GetPaymentSubscriptionById(paymentid);
 
             return Ok(result);  
         }
 
         [HttpPost(Name ="CreateSubscription")]
-        public async Task<IActionResult> CreateSubscription(CreateSubscriptionDto createSubscriptionDto)
+        public async Task<IActionResult> CreateSubscription(Guid paymentId)
         {
-            var result = await _service.SubscriptionService.CreateSubscription(createSubscriptionDto);
+            var result = await _service.SubscriptionService.CreateSubscription( paymentId);
 
             return Ok(result);
         } 

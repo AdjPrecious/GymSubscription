@@ -12,7 +12,7 @@ using Repository;
 namespace GymSubscription.Migrations
 {
     [DbContext(typeof(RepositoryContext))]
-    [Migration("20241030183649_InitialMigration")]
+    [Migration("20241030223122_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -128,7 +128,7 @@ namespace GymSubscription.Migrations
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("PlanID")
+                    b.Property<Guid>("PaymentId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("StartDate")
@@ -142,7 +142,8 @@ namespace GymSubscription.Migrations
 
                     b.HasKey("SubscriptionID");
 
-                    b.HasIndex("PlanID");
+                    b.HasIndex("PaymentId")
+                        .IsUnique();
 
                     b.ToTable("Subscriptions");
                 });
@@ -259,19 +260,19 @@ namespace GymSubscription.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "58a38232-a48f-4729-bff1-9ff6e94318e9",
+                            Id = "b838d95c-ca15-49b6-8a96-55c790222e30",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "de99e509-86ef-4e35-9ad0-6c6201c7e512",
+                            Id = "f15cdbe8-e03a-4c46-9929-5a7e60079db0",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "2ffc87eb-9245-4dd2-bd77-a10650d3735d",
+                            Id = "1da902f7-f8e6-4be6-b98f-36e2fd203fca",
                             Name = "Trainer",
                             NormalizedName = "TRAINER"
                         });
@@ -411,13 +412,13 @@ namespace GymSubscription.Migrations
 
             modelBuilder.Entity("Entity.Model.Subscription", b =>
                 {
-                    b.HasOne("Entity.Model.Plan", "Plan")
-                        .WithMany()
-                        .HasForeignKey("PlanID")
+                    b.HasOne("Entity.Model.Payment", "Payment")
+                        .WithOne("Subscription")
+                        .HasForeignKey("Entity.Model.Subscription", "PaymentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Plan");
+                    b.Navigation("Payment");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -468,6 +469,12 @@ namespace GymSubscription.Migrations
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Entity.Model.Payment", b =>
+                {
+                    b.Navigation("Subscription")
                         .IsRequired();
                 });
 

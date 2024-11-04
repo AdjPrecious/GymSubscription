@@ -14,9 +14,11 @@ namespace Contract
 
         Task<Payment> GetPaymentByReference(string reference);
 
-        Task<Payment> GetPaymentAsync(Guid id);
+        Task<Payment> GetUserPaymentAsync(string userid, Guid paymentId);
 
         Task CreatePaymentAsync(Payment payment);
+
+        Task<IEnumerable<Payment>> GetAllUserPaymentAsync(string userId);
 
         void DeletePayment(Payment payment);
 

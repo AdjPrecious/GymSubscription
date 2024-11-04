@@ -14,7 +14,7 @@ namespace Contract
 
         Task CreateSubscription(Subscription subscription);
 
-        Task<Subscription> GetSubscriptionByIdAsync(Guid Id);
+        Task<Subscription> GetPaymentSubscriptionByIdAsync(Guid paymentId);
         void DeleteSubscription(Subscription subscription);
         void UpdateSubscription(Subscription subscription);
 

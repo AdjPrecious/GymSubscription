@@ -11,13 +11,7 @@ namespace Shared.DataTransferObjects.SubscriptionDto
     public record SubscriptionDto
     {
         public Guid SubscriptionID { get; set; }
-
-        public string? UserID { get; set; }
-
         
-
-        public Guid PlanID { get; set; }
-       
 
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
@@ -27,6 +21,6 @@ namespace Shared.DataTransferObjects.SubscriptionDto
        
 
         public DateTime CreatedAt { get; set; }
-        public DateTime UpdatedAt { get; set; }
+        
     }
 }

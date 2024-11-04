@@ -93,6 +93,39 @@ namespace GymSubscription.Presentation.Controllers
             return StatusCode(201);
         }
 
+        [HttpPost("UpdateUserInfo")]
+        public async Task<IActionResult> UpdateUserInfo(string email, UpdateUserDto updateUser)
+        {
+            await _service.AuthenticationService.UpdateUserInfo(email, updateUser);
+
+            return NoContent();
+        }
+
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = "Admin")]
+        [HttpGet("getalluser")]
+        public async Task<IActionResult> GetAllUser()
+        {
+            var result = await _service.AuthenticationService.GetAllUserInfo();
+
+            return Ok(result);
+        }
+
+        [Authorize(AuthenticationSchemes = "Bearer")]
+        [HttpGet("getuser")]
+        public async Task<IActionResult> GetUser(string email)
+        {
+            var result = await _service.AuthenticationService.GetUserByEmail(email);
+
+            return Ok(result);
+        }
+        [Authorize(AuthenticationSchemes = "Bearer")]
+        [HttpDelete("DeleteUser")]
+        public async Task<IActionResult> Deleteuser(string email)
+        {
+            await _service.AuthenticationService.DeleteUser(email);
+
+            return NoContent();
+        }
        
     }
 }

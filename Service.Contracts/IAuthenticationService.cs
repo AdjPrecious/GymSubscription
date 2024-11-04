@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Entity.Model;
+using Microsoft.AspNetCore.Identity;
 using Shared.DataTransferObjects;
 using Shared.DataTransferObjects.UserDto;
 using System;
@@ -22,6 +23,14 @@ namespace Service.Contracts
         Task<IdentityResult> ResetPassword(PasswordResetDto passwordResetDto);
 
         Task<IdentityResult> ChangePassword(ChangePasswordDto changePasswordDto);
+
+        Task UpdateUserInfo(string email, UpdateUserDto updateUserDto);
+
+        Task<IEnumerable<UserDto>> GetAllUserInfo(); 
+
+        Task<UserDto> GetUserByEmail(string email);
+
+        Task DeleteUser(string email);
 
         
     }

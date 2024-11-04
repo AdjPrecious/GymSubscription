@@ -9,8 +9,8 @@ namespace Service.Contracts
 {
     public interface ISubscriptionService
     {
-        Task<IEnumerable<SubscriptionDto>> GetAllSubScription();
-        Task<SubscriptionDto> GetSubscriptionById(Guid subscriptionId);
-        Task<SubscriptionDto> CreateSubscription(CreateSubscriptionDto createSubscriptionDto);
+        
+        Task<SubscriptionDto> GetPaymentSubscriptionById(Guid paymentId);
+        Task<SubscriptionDto> CreateSubscription(Guid  PaymentId);
     }
 }

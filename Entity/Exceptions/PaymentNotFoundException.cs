@@ -8,7 +8,7 @@ namespace Entity.Exceptions
 {
     public class PaymentNotFoundException : NotFoundException
     {
-        public PaymentNotFoundException(Guid PaymentId) : base($"Payment with id: {PaymentId} Cannot be found in the database")
+        public PaymentNotFoundException() : base($"Payment Cannot be found in the database")
         {
         }
     }

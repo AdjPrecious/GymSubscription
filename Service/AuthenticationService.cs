@@ -16,8 +16,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using Entity.ConfigurationModels;
 using System.Xml.Linq;
-
-
+using Microsoft.EntityFrameworkCore;
 
 namespace Service
 {
@@ -222,11 +221,50 @@ namespace Service
             return result;
         }
 
-       
+        public async Task UpdateUserInfo(string email, UpdateUserDto updateUserDto)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+                throw new UserNotFoundException(email);
 
+            var userToMap = _mapper.Map(updateUserDto, user);
+            await _userManager.UpdateAsync(userToMap);
 
-        
+           
 
-        
+        }
+
+        public async Task<IEnumerable<UserDto>> GetAllUserInfo()
+        {
+            var users = await _userManager.Users.ToListAsync();
+
+            if (users == null)
+                throw new UserNotFoundException("users");
+
+           var  userToMap = _mapper.Map<IEnumerable<UserDto>>(users);
+
+            return userToMap;
+
+        }
+
+        public async Task<UserDto> GetUserByEmail(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if(user == null)
+                throw new UserNotFoundException(email);
+            var userToMap = _mapper.Map<UserDto>(user); 
+
+            return userToMap;
+        }
+
+        public async Task DeleteUser(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if( user == null)
+                throw new UserNotFoundException(email);
+
+            await _userManager.DeleteAsync(user);
+            
+        }
     }
 }

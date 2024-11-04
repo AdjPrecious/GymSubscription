@@ -43,25 +43,55 @@ namespace Service
             PayStack = new PayStackApi(token);
         }
 
-        public async Task<TransactionInitializeResponse> CreatePaymentAsync(CreatePaymentDto createPaymentDto)
+        public async Task<IEnumerable<PaymentDto>> GetUserPaymentsAsync()
         {
-            var plan = await _repository.Plan.GetPlanAsync(createPaymentDto.PlanId);
-            if (plan == null)
-                throw new PlanNotFoundException(createPaymentDto.PlanId);
+            var user = await VerifyUser();
 
-            var  useremail = _httpContextAccessor.HttpContext?.User?.Identity?.Name;
+            var payment = await _repository.Payment.GetAllUserPaymentAsync(user.Id);
+            if (payment == null)
+                throw new PaymentNotFoundException();
+
+            var paymentToMap = _mapper.Map<IEnumerable<PaymentDto>>(payment);
+
+            return paymentToMap;
+        }
+
+        private async Task<User?> VerifyUser()
+        {
+            var useremail = _httpContextAccessor.HttpContext?.User?.Identity?.Name;
             if (useremail == null)
                 throw new UserNotLoginException();
             var user = await _userManager.FindByEmailAsync(useremail);
+            if (user == null)
+                throw new UserNotFoundException(useremail);
+            return user;
+        }
+
+        public async Task<PaymentDto> GetUserPaymentAsync(Guid paymentId)
+        {
+            var user = await VerifyUser();
+
+            var payment = await _repository.Payment.GetUserPaymentAsync(user.Id, paymentId);
+            if (payment == null)
+                throw new PaymentNotFoundException();
+
+            var paymentToMap = _mapper.Map<PaymentDto>(payment);
+
+            return paymentToMap;
+        }
+
+        public async Task<TransactionInitializeResponse> CreatePaymentAsync(CreatePaymentDto createPaymentDto)
+        {
+            var plan = await Verifyplan(createPaymentDto);
+            var user = await GetUser();
+
 
             TransactionInitializeRequest request = new TransactionInitializeRequest()
             {
                 AmountInKobo = (int)(plan.Price * 100),
                 Email = user.Email,
-                Plan = plan.PlanName,
-                
                 Reference = Generate().ToString(),
-                Currency = "NGN",  
+                Currency = "NGN",
                 CallbackUrl = "https://localhost:7034/swagger/payment/verify"
 
             };
@@ -74,17 +104,18 @@ namespace Service
                 AmountPaid = plan.Price,
                 PaymentMethod = createPaymentDto.PaymentMethod,
                 PlanID = plan.PlanID,
-                Plan =  plan ,
+                Plan = plan,
                 UserId = user.Id,
                 User = user,
                 TransactionReference = request.Reference,
             };
-           await _repository.Payment.CreatePaymentAsync(payment);
+            await _repository.Payment.CreatePaymentAsync(payment);
             await _repository.SavechagesAsync();
-             return response;    
-                
+            return response;
+
         }
 
+    
         public async Task<bool> Verify(string Reference)
         {
             TransactionVerifyResponse response = PayStack.Transactions.Verify(Reference);
@@ -105,20 +136,33 @@ namespace Service
             return false;      
         }
 
+       
+
         public static int Generate()
         {
             Random rnd = new Random((int)DateTime.Now.Ticks);
             return rnd.Next(100000000, 999999999);
         }
 
-        public async Task<PaymentDto> GetPaymentAsync(Guid id)
-        {
-            var payment = await  _repository.Payment.GetPaymentAsync(id);
-            if(payment == null)
-                throw new PaymentNotFoundException(id);
+       
 
-            var paymentDto =_mapper.Map<PaymentDto>(payment);
-            return paymentDto;
+        private async Task<User?> GetUser()
+        {
+            var useremail = _httpContextAccessor.HttpContext?.User?.Identity?.Name;
+            if (useremail == null)
+                throw new UserNotLoginException();
+            var user = await _userManager.FindByEmailAsync(useremail);
+            return user;
         }
+
+        private async Task<Plan> Verifyplan(CreatePaymentDto createPaymentDto)
+        {
+            var plan = await _repository.Plan.GetPlanAsync(createPaymentDto.PlanId);
+            if (plan == null)
+                throw new PlanNotFoundException(createPaymentDto.PlanId);
+            return plan;
+        }
+
+       
     }
 }

@@ -24,7 +24,7 @@ namespace Repository
         public async Task<IEnumerable<Subscription>> GetAllSubscriptionAsync() =>await FindAll().OrderBy(s => s.CreatedAt.ToString()).ToListAsync();
        
 
-        public async Task<Subscription> GetSubscriptionByIdAsync(Guid Id) => await FindByCondition(s => s.SubscriptionID.Equals(Id)).FirstOrDefaultAsync();
+        public async Task<Subscription> GetPaymentSubscriptionByIdAsync(Guid paymentId) => await FindByCondition(s => s.PaymentId.Equals(paymentId)).SingleOrDefaultAsync();
        
 
         

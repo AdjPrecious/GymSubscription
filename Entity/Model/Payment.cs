@@ -18,5 +18,8 @@ namespace Entity.Model
 
         public Guid PlanID { get; set; }
         public Plan? Plan { get; set; }
+
+       
+        public Subscription Subscription { get; set; }
     }
 }

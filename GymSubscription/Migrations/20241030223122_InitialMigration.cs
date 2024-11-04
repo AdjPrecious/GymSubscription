@@ -235,21 +235,21 @@ namespace GymSubscription.Migrations
                 columns: table => new
                 {
                     SubscriptionID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    PlanID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    PaymentId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Subscriptions", x => x.SubscriptionID);
                     table.ForeignKey(
-                        name: "FK_Subscriptions_Plans_PlanID",
-                        column: x => x.PlanID,
-                        principalTable: "Plans",
-                        principalColumn: "PlanID",
+                        name: "FK_Subscriptions_Payment_PaymentId",
+                        column: x => x.PaymentId,
+                        principalTable: "Payment",
+                        principalColumn: "PaymentID",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -258,9 +258,9 @@ namespace GymSubscription.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "2ffc87eb-9245-4dd2-bd77-a10650d3735d", null, "Trainer", "TRAINER" },
-                    { "58a38232-a48f-4729-bff1-9ff6e94318e9", null, "Admin", "ADMIN" },
-                    { "de99e509-86ef-4e35-9ad0-6c6201c7e512", null, "User", "USER" }
+                    { "1da902f7-f8e6-4be6-b98f-36e2fd203fca", null, "Trainer", "TRAINER" },
+                    { "b838d95c-ca15-49b6-8a96-55c790222e30", null, "Admin", "ADMIN" },
+                    { "f15cdbe8-e03a-4c46-9929-5a7e60079db0", null, "User", "USER" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -319,9 +319,10 @@ namespace GymSubscription.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Subscriptions_PlanID",
+                name: "IX_Subscriptions_PaymentId",
                 table: "Subscriptions",
-                column: "PlanID");
+                column: "PaymentId",
+                unique: true);
         }
 
         /// <inheritdoc />
@@ -346,13 +347,13 @@ namespace GymSubscription.Migrations
                 name: "Attendances");
 
             migrationBuilder.DropTable(
-                name: "Payment");
-
-            migrationBuilder.DropTable(
                 name: "Subscriptions");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "Payment");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

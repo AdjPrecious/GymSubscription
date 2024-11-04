@@ -11,7 +11,8 @@ namespace Service.Contracts
     public interface IPaymentService
     {
         Task<TransactionInitializeResponse> CreatePaymentAsync(CreatePaymentDto createPaymentDto);
-        Task<PaymentDto> GetPaymentAsync(Guid id);
+        Task<PaymentDto> GetUserPaymentAsync(Guid paymentId);
+        Task<IEnumerable<PaymentDto>> GetUserPaymentsAsync();
         Task<bool> Verify(string Reference);
     }
 }

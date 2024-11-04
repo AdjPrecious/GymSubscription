@@ -6,9 +6,6 @@ namespace Entity.Model
     public class Subscription
     {
         public Guid SubscriptionID { get; set; }
-        
-        public Guid PlanID { get; set; }
-        public Plan? Plan { get; set; }
 
         public DateTime StartDate { get; set;}
         public DateTime EndDate { get; set; }
@@ -16,5 +13,9 @@ namespace Entity.Model
 
         public DateTime CreatedAt { get; set;}
         public DateTime UpdatedAt { get; set;}
+
+        public Guid PaymentId { get; set; }
+
+        public Payment Payment { get; set; }
     }
 }

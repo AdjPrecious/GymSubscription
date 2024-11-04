@@ -13,7 +13,7 @@ namespace Entity.Model
         public DateTime CreatedAt { get; set; }
 
         
-        public Payment? Payment { get; set; }
+        public ICollection<Payment>? Payment { get; set; }
 
        
     }
