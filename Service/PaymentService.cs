@@ -26,6 +26,7 @@ namespace Service
         private UserManager<User> _userManager;
         private readonly IConfiguration _config;
         private readonly string token;
+        private Payment _payment;
 
 
         private  PayStackApi PayStack {  get; set; }
@@ -73,7 +74,7 @@ namespace Service
 
             var payment = await _repository.Payment.GetUserPaymentAsync(user.Id, paymentId);
             if (payment == null)
-                throw new PaymentNotFoundException();
+                throw new ActiveSubscriptionException();
 
             var paymentToMap = _mapper.Map<PaymentDto>(payment);
 
@@ -84,6 +85,14 @@ namespace Service
         {
             var plan = await Verifyplan(createPaymentDto);
             var user = await GetUser();
+            var activepayment = await _repository.Payment.GetUserFirstActivePayment(user.Id);
+
+           if(activepayment != null)
+            {
+                throw new ActiveSubscriptionException();
+
+            }
+
 
 
             TransactionInitializeRequest request = new TransactionInitializeRequest()

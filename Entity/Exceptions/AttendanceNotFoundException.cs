@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Entity.Exceptions
 {
-    public class AlrealdyExistException : Exception
+    public class AttendanceNotFoundException : NotFoundException
     {
-        public AlrealdyExistException(string? message) : base($"Plan with name {message} already exist in the database")
+        public AttendanceNotFoundException(Guid id) : base($"Attendance with Id: {id} cannot be found" )
         {
         }
     }

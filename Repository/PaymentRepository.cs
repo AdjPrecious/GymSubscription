@@ -1,4 +1,5 @@
 ﻿using Contract;
+using Entity.EnumData;
 using Entity.Model;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -22,7 +23,7 @@ namespace Repository
 
         
 
-        public async Task<IEnumerable<Payment>> GetAllPaymentAsync() => await FindAll().OrderBy(p => p.CreatedAt.ToString()).ToListAsync();
+        public async Task<IEnumerable<Payment>> GetAllPaymentAsync() => await FindAll().OrderBy(p => p.CreatedAt).ToListAsync();
         
 
         public async Task<Payment> GetUserPaymentAsync(string userId, Guid paymentId) => await FindByCondition(p => p.UserId.Equals(userId) && p.PaymentID.Equals(paymentId)).FirstOrDefaultAsync();
@@ -34,6 +35,8 @@ namespace Repository
         public async Task<Payment> GetPaymentByReference(string reference) => await FindByCondition(p => p.TransactionReference.Equals(reference)).FirstOrDefaultAsync();
 
         public async Task<IEnumerable<Payment>> GetAllUserPaymentAsync(string userId) => await FindByCondition(p => p.UserId.Equals(userId)).ToListAsync();
-        
+
+        public async Task<Payment> GetUserFirstActivePayment(string userId) => await FindByCondition(p => p.UserId.Equals(userId) && p.Subscription.Status.Equals(SubscriptionStatus.Active)).FirstOrDefaultAsync();
+      
     }
 }

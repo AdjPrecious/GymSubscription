@@ -21,5 +21,7 @@ namespace Entity.Model
 
        
         public ICollection<Payment>? Payments { get; set; }
+
+        public ICollection<Attendance>? Users { get; set; }
     }
 }

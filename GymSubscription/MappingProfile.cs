@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Entity.Model;
+using Shared.DataTransferObjects.AttendanceDto;
 using Shared.DataTransferObjects.PlanDto;
 using Shared.DataTransferObjects.SubscriptionDto;
 using Shared.DataTransferObjects.UserDto;
@@ -28,6 +29,9 @@ namespace GymSubscription
 
             /*Subscription Map*/
             CreateMap<Subscription, SubscriptionDto>();
+
+            /*Attendance map*/
+            CreateMap<Attendance, AttendanceDto>();
                 
             
 

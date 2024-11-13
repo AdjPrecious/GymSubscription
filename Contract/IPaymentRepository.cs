@@ -20,6 +20,8 @@ namespace Contract
 
         Task<IEnumerable<Payment>> GetAllUserPaymentAsync(string userId);
 
+        Task<Payment> GetUserFirstActivePayment(string userId);
+
         void DeletePayment(Payment payment);
 
         void UpdatePayment(Payment payment);

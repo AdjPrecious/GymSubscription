@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Repository;
 
@@ -11,9 +12,11 @@ using Repository;
 namespace GymSubscription.Migrations
 {
     [DbContext(typeof(RepositoryContext))]
-    partial class RepositoryContextModelSnapshot : ModelSnapshot
+    [Migration("20241105095945_UserAttendance")]
+    partial class UserAttendance
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -28,7 +31,7 @@ namespace GymSubscription.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("CheckInTime")
+                    b.Property<DateTime>("CheckInTime")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("CheckOutTime")
@@ -36,9 +39,6 @@ namespace GymSubscription.Migrations
 
                     b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("datetime2");
-
-                    b.Property<TimeSpan?>("Duration")
-                        .HasColumnType("time");
 
                     b.Property<string>("UserID")
                         .HasColumnType("nvarchar(450)");
@@ -259,19 +259,19 @@ namespace GymSubscription.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "e844d8f9-be39-443f-afd6-7f5a0823f826",
+                            Id = "7d97e664-6bed-46ca-8cb5-de87488dbf69",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "27d74b76-109f-4642-8ef6-8744a02f3673",
+                            Id = "a03cd803-d5f4-4462-bb8a-e7797383c467",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "4bee9130-e370-4bda-8b2a-9412a29bae4c",
+                            Id = "190dcf2e-1b7d-4b5f-beca-8b9308b7c989",
                             Name = "Trainer",
                             NormalizedName = "TRAINER"
                         });

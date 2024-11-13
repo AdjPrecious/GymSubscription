@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Entity.Exceptions
 {
-    public class AlrealdyExistException : Exception
+    public class ActiveSubscriptionException : AlrealdyExistException
     {
-        public AlrealdyExistException(string? message) : base($"Plan with name {message} already exist in the database")
+        public ActiveSubscriptionException() : base("You have and active subscription on this plan")
         {
         }
     }

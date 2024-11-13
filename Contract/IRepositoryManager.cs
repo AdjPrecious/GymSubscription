@@ -12,6 +12,8 @@ namespace Contract
         IPlanRespository Plan { get; }
 
         IPaymentRepository Payment { get; }
+
+        IAttendanceRepository Attendance { get; }
         Task SavechagesAsync();
 
     }

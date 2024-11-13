@@ -21,6 +21,7 @@ namespace Service
         private readonly Lazy<IAuthenticationService> _authenticationService;
         private readonly Lazy<IPlanService> _planService;
         private readonly Lazy<IPaymentService> _paymentService;
+        private readonly Lazy<IAttendanceService> _attendanceService; 
 
         public ServiceManager(IRepositoryManager repositoryManager, ILoggerManager logger, IMapper mapper, UserManager<User> userManager,  IOptions<JwtConfiguration> configuration, IHttpContextAccessor httpContextAccessor, IConfiguration config)
         {
@@ -28,6 +29,8 @@ namespace Service
             _authenticationService = new Lazy<IAuthenticationService>(() => new AuthenticationService(logger,mapper,userManager,  configuration, httpContextAccessor));
             _planService = new Lazy<IPlanService>(() => new PlanService(logger, mapper, repositoryManager));
             _paymentService = new Lazy<IPaymentService>(() => new PaymentService(repositoryManager, logger, mapper, httpContextAccessor, userManager, config));
+
+            _attendanceService = new Lazy<IAttendanceService>(() => new AttendanceService(repositoryManager, logger, mapper, userManager, configuration, httpContextAccessor));
         }
         public ISubscriptionService SubscriptionService => _subscriptionService.Value;
 
@@ -36,5 +39,7 @@ namespace Service
         public IPlanService PlanService => _planService.Value;
 
         public IPaymentService PaymentService => _paymentService.Value;
+
+        public IAttendanceService AttendanceService => _attendanceService.Value;
     }
 }

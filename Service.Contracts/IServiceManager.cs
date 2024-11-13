@@ -6,6 +6,8 @@
         IAuthenticationService AuthenticationService { get; }
         IPlanService PlanService { get; }
 
+        IAttendanceService AttendanceService { get; }
+
         IPaymentService PaymentService { get; }
 
     }
