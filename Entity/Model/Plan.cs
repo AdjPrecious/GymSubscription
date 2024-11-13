@@ -1,8 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Entity.Interface;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Entity.Model
 {
-    public class Plan
+    public class Plan : ISoftDeletable
     {
         public Guid PlanID { get; set; }
         public string? PlanName { get; set; }
@@ -15,6 +16,6 @@ namespace Entity.Model
         
         public ICollection<Payment>? Payment { get; set; }
 
-       
+        public bool IsDeleted { get; set; }
     }
 }
