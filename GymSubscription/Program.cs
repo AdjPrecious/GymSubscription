@@ -1,7 +1,11 @@
 using Contract;
 using GymSubscription.Extensions;
+using Hangfire;
 using NLog;
 using PayStack.Net;
+using Repository;
+using Service;
+using Service.Contracts;
 
 var builder = WebApplication.CreateBuilder(args);
 LogManager.LoadConfiguration(string.Concat(Directory.GetCurrentDirectory(),
@@ -16,9 +20,13 @@ builder.Services.ConfigureRepositoryManager();
 builder.Services.AddJwtConfiguration(builder.Configuration);
 builder.Services.ConfigureLoggerService();
 builder.Services.ConfigureServiceManager();
+builder.Services.ConfigureHangfire(builder.Configuration);
+builder.Services.AddHangfireServer();
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddAuthentication();
+
 builder.Services.AddControllers()
+
 .AddApplicationPart(typeof(GymSubscription.Presentation.AssemblyReference).Assembly);
 
 
@@ -46,6 +54,10 @@ app.UseStaticFiles();
 app.UseAuthentication();
 
 app.UseAuthorization();
+
+app.UseHangfireDashboard();
+
+RecurringJob.AddOrUpdate<IJobService>("jobId", service => service.UpdateSubscription(), Cron.Minutely);
 
 app.MapControllers();
 

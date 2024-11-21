@@ -1,4 +1,7 @@
 ﻿using Contract;
+using Entity.EnumData;
+using Entity.Model;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,6 +34,8 @@ namespace Repository
         public IAttendanceRepository Attendance => _attendanceRepository.Value;
 
         public async Task SavechagesAsync() => await _repositoryContext.SaveChangesAsync();
+
         
+
     }
 }

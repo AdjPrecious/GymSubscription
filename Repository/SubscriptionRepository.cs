@@ -1,4 +1,5 @@
 ﻿using Contract;
+using Entity.EnumData;
 using Entity.Model;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -25,13 +26,13 @@ namespace Repository
        
 
         public async Task<Subscription> GetPaymentSubscriptionByIdAsync(Guid paymentId) => await FindByCondition(s => s.PaymentId.Equals(paymentId)).SingleOrDefaultAsync();
-       
 
         
-       
-       
-
+      
         public void UpdateSubscription(Subscription subscription) => Update(subscription);
-        
+
+        public async Task<IEnumerable<Subscription>> GetUsersExpiredSubscription()=> await FindByCondition(s => s.EndDate >= DateTime.Now && s.Status == SubscriptionStatus.Active).ToListAsync();
+
+
     }
 }

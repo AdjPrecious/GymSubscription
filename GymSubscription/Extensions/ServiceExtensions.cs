@@ -1,6 +1,7 @@
 ﻿using Contract;
 using Entity.ConfigurationModels;
 using Entity.Model;
+using Hangfire;
 using LoggerService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -10,7 +11,6 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Repository;
 using Service;
-using Service.Contracts;
 using System.Text;
 
 namespace GymSubscription.Extensions
@@ -19,6 +19,15 @@ namespace GymSubscription.Extensions
        
     public static class ServiceExtensions
     {
+
+        public static void ConfigureHangfire(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddHangfire(config =>
+            {
+                config.UseSimpleAssemblyNameTypeSerializer().UseRecommendedSerializerSettings().UseSqlServerStorage(configuration.GetConnectionString("sqlConnection"));
+            });
+        }
+
         public static void AddJwtConfiguration(this IServiceCollection services, IConfiguration configuration) => services.Configure<JwtConfiguration>(configuration.GetSection("JwtSettings"));
 
 
@@ -60,7 +69,7 @@ namespace GymSubscription.Extensions
 
         public static void ConfigureServiceManager(this IServiceCollection services)
         {
-            services.AddScoped<IServiceManager, ServiceManager>();
+            services.RegisterServiceProjectDependencies();
         }
 
         public static void ConfigureIdentity(this IServiceCollection services)

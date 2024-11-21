@@ -18,5 +18,9 @@ namespace Contract
         void DeleteSubscription(Subscription subscription);
         void UpdateSubscription(Subscription subscription);
 
+        Task<IEnumerable<Subscription>> GetUsersExpiredSubscription();
+
+
+
     }
 }

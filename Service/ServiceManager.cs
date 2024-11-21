@@ -2,10 +2,13 @@
 using Contract;
 using Entity.ConfigurationModels;
 using Entity.Model;
+using Hangfire;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
+
 using Service.Contracts;
 using System;
 using System.Collections.Generic;
@@ -22,8 +25,9 @@ namespace Service
         private readonly Lazy<IPlanService> _planService;
         private readonly Lazy<IPaymentService> _paymentService;
         private readonly Lazy<IAttendanceService> _attendanceService; 
+        
 
-        public ServiceManager(IRepositoryManager repositoryManager, ILoggerManager logger, IMapper mapper, UserManager<User> userManager,  IOptions<JwtConfiguration> configuration, IHttpContextAccessor httpContextAccessor, IConfiguration config)
+        public ServiceManager(IRepositoryManager repositoryManager, ILoggerManager logger, IMapper mapper, UserManager<User> userManager,  IOptions<JwtConfiguration> configuration, IHttpContextAccessor httpContextAccessor, IConfiguration config, IRecurringJobManager recurringJobManager, IBackgroundJobClient backgroundJobClient)
         {
             _subscriptionService = new Lazy<ISubscriptionService>(() => new SubscriptionService(repositoryManager, logger, mapper, httpContextAccessor, userManager));
             _authenticationService = new Lazy<IAuthenticationService>(() => new AuthenticationService(logger,mapper,userManager,  configuration, httpContextAccessor));
@@ -41,5 +45,7 @@ namespace Service
         public IPaymentService PaymentService => _paymentService.Value;
 
         public IAttendanceService AttendanceService => _attendanceService.Value;
+
+
     }
 }
