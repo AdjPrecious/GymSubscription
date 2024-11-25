@@ -17,6 +17,8 @@ using Microsoft.Extensions.Options;
 using Entity.ConfigurationModels;
 using System.Xml.Linq;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.AspNetCore.WebUtilities;
 
 namespace Service
 {
@@ -48,7 +50,7 @@ namespace Service
         }
        
 
-        public async Task<IdentityResult> RegisterUser(UserForRegistrationDto userForRegistrationDto)
+        public async Task<(IdentityResult, string)> RegisterUser(UserForRegistrationDto userForRegistrationDto)
         {
             var user = _mapper.Map<User>(userForRegistrationDto);
             
@@ -59,9 +61,23 @@ namespace Service
             if (result.Succeeded) 
                 await _userManager.AddToRoleAsync(user, userForRegistrationDto.Role);
 
+            var generateEmailConfirmationLink = await GenerateEmailConfirmationLink(user);
 
-            
-            return result;
+
+            return (result, generateEmailConfirmationLink);
+        }
+
+        private async Task<string> GenerateEmailConfirmationLink(User user)
+        {
+            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+
+            var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
+
+            var request = _httpContextAccessor.HttpContext.Request;
+
+            var confirmationLink = $"{request.Scheme}://{request.Host}/Account/ConfirmEmail?userId={user.Id}&token={encodedToken}";
+
+            return confirmationLink;
         }
 
         public async Task<TokenDto> CreateToken(bool populateExp)

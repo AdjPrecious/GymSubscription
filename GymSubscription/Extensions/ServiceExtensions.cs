@@ -83,6 +83,7 @@ namespace GymSubscription.Extensions
                 o.Password.RequireUppercase = false;
                 o.Password.RequireNonAlphanumeric = false; o.Password.RequiredLength = 8;
                 o.User.RequireUniqueEmail = true;
+                
             }).AddEntityFrameworkStores<RepositoryContext>().AddDefaultTokenProviders();
         }
 

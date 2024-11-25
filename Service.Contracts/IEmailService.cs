@@ -10,6 +10,6 @@ namespace Service.Contracts
 {
     public interface IEmailService
     {
-        Task AccountEmailAsync(UserForRegistrationDto UserForRegistrationDto);
+        Task AccountEmailAsync(UserForRegistrationDto UserForRegistrationDto, string links);
     }
 }

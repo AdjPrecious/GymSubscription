@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Hangfire;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
 using Shared.DataTransferObjects.UserDto;
@@ -22,9 +23,9 @@ namespace GymSubscription.Presentation.Controllers
         public async Task<IActionResult> RegisterUser(UserForRegistrationDto userForRegistrationDto)
         {
             var result = await _service.AuthenticationService.RegisterUser(userForRegistrationDto);
-            if (!result.Succeeded)
+            if (!result.Item1.Succeeded)
             {
-                foreach (var error in result.Errors)
+                foreach (var error in result.Item1.Errors)
                 {
                     ModelState.TryAddModelError(error.Code, error.Description);
                 }
@@ -33,7 +34,7 @@ namespace GymSubscription.Presentation.Controllers
             }
             else
             {
-                await _service.EmailService.AccountEmailAsync(userForRegistrationDto);
+               BackgroundJob.Enqueue(() =>  _service.EmailService.AccountEmailAsync(userForRegistrationDto, result.Item2));
             }
 
             

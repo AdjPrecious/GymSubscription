@@ -28,7 +28,7 @@ namespace Service
             _settings = emailSettings.Value;
         }
 
-        public async Task AccountEmailAsync(UserForRegistrationDto UserForRegistrationDto)
+        public async Task AccountEmailAsync(UserForRegistrationDto UserForRegistrationDto, string link)
         {
             var message = new MimeMessage();
             message.From.Add(new MailboxAddress(_settings.AppName, _settings.SmptUserName));
@@ -37,7 +37,8 @@ namespace Service
             message.Body = new TextPart(TextFormat.Html)
             {
                 Text = $@" <h1> Welcome, {UserForRegistrationDto.FirstName}</h1>
-                            <p>Your account has been successfully created.</p
+                            <p>Your account has been successfully created.</p>
+                            <p>Click on the link to confirm email <a>{link}</a>.</p> 
                             <p>Thank you for registering with us.</p>
                             <br/>
                             <p> - The Team </p>"
