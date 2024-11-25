@@ -30,6 +30,8 @@ namespace GymSubscription.Extensions
 
         public static void AddJwtConfiguration(this IServiceCollection services, IConfiguration configuration) => services.Configure<JwtConfiguration>(configuration.GetSection("JwtSettings"));
 
+        public static void AddEmailSetting(this IServiceCollection services, IConfiguration configuration) => services.Configure<EmailSettings>(configuration.GetSection("EmailSettings"));
+
 
         public static void ConfigureJWT(this IServiceCollection services, IConfiguration configuration)
         {

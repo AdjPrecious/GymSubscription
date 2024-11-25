@@ -9,6 +9,7 @@ namespace Service
         {
             services.AddScoped<IServiceManager, ServiceManager>();
             services.AddScoped<IJobService, JobService>();
+            services.AddScoped<IEmailService, EmailService>();
         }
     }
 }

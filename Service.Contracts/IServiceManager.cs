@@ -10,5 +10,7 @@
 
         IPaymentService PaymentService { get; }
 
+        IEmailService EmailService { get; }
+
     }
 }

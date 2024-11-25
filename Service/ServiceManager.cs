@@ -20,14 +20,15 @@ namespace Service
 {
     public sealed class ServiceManager : IServiceManager
     {
-       private readonly Lazy<ISubscriptionService> _subscriptionService;
+        private readonly Lazy<ISubscriptionService> _subscriptionService;
         private readonly Lazy<IAuthenticationService> _authenticationService;
         private readonly Lazy<IPlanService> _planService;
         private readonly Lazy<IPaymentService> _paymentService;
         private readonly Lazy<IAttendanceService> _attendanceService; 
+        private readonly Lazy<IEmailService> _emailService;
         
 
-        public ServiceManager(IRepositoryManager repositoryManager, ILoggerManager logger, IMapper mapper, UserManager<User> userManager,  IOptions<JwtConfiguration> configuration, IHttpContextAccessor httpContextAccessor, IConfiguration config, IRecurringJobManager recurringJobManager, IBackgroundJobClient backgroundJobClient)
+        public ServiceManager(IRepositoryManager repositoryManager, ILoggerManager logger, IMapper mapper, UserManager<User> userManager,  IOptions<JwtConfiguration> configuration, IOptions<EmailSettings> emailSettings, IHttpContextAccessor httpContextAccessor, IConfiguration config)
         {
             _subscriptionService = new Lazy<ISubscriptionService>(() => new SubscriptionService(repositoryManager, logger, mapper, httpContextAccessor, userManager));
             _authenticationService = new Lazy<IAuthenticationService>(() => new AuthenticationService(logger,mapper,userManager,  configuration, httpContextAccessor));
@@ -35,6 +36,8 @@ namespace Service
             _paymentService = new Lazy<IPaymentService>(() => new PaymentService(repositoryManager, logger, mapper, httpContextAccessor, userManager, config));
 
             _attendanceService = new Lazy<IAttendanceService>(() => new AttendanceService(repositoryManager, logger, mapper, userManager, configuration, httpContextAccessor));
+
+            _emailService = new Lazy<IEmailService>(() => new EmailService( emailSettings));
         }
         public ISubscriptionService SubscriptionService => _subscriptionService.Value;
 
@@ -46,6 +49,6 @@ namespace Service
 
         public IAttendanceService AttendanceService => _attendanceService.Value;
 
-
+        public IEmailService EmailService => _emailService.Value;
     }
 }

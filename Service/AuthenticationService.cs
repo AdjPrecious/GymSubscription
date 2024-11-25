@@ -58,6 +58,9 @@ namespace Service
 
             if (result.Succeeded) 
                 await _userManager.AddToRoleAsync(user, userForRegistrationDto.Role);
+
+
+            
             return result;
         }
 

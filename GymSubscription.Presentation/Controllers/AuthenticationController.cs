@@ -31,6 +31,13 @@ namespace GymSubscription.Presentation.Controllers
                 return BadRequest(ModelState);
 
             }
+            else
+            {
+                await _service.EmailService.AccountEmailAsync(userForRegistrationDto);
+            }
+
+            
+
             return StatusCode(201);
         }
 

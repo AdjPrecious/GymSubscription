@@ -18,6 +18,7 @@ builder.Services.ConfigureJWT(builder.Configuration);
 builder.Services.ConfigureIdentity();
 builder.Services.ConfigureRepositoryManager();
 builder.Services.AddJwtConfiguration(builder.Configuration);
+builder.Services.AddEmailSetting(builder.Configuration);
 builder.Services.ConfigureLoggerService();
 builder.Services.ConfigureServiceManager();
 builder.Services.ConfigureHangfire(builder.Configuration);
@@ -57,7 +58,7 @@ app.UseAuthorization();
 
 app.UseHangfireDashboard();
 
-RecurringJob.AddOrUpdate<IJobService>("jobId", service => service.UpdateSubscription(), Cron.Minutely);
+RecurringJob.AddOrUpdate<IJobService>("jobId", service => service.UpdateSubscription(), Cron.Daily);
 
 app.MapControllers();
 
