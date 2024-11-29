@@ -77,7 +77,7 @@ namespace Service
                 throw new UserNotLoginException();
             var user = await _userManager.FindByEmailAsync(useremail);
             if (user == null)
-                throw new UserNotFoundException(useremail);
+                throw new UserNotFoundException();
             return user;
         }
 

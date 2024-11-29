@@ -40,7 +40,7 @@ namespace Service
         {
             var user = await _userManager.FindByIdAsync(userId.ToString());
             if (user == null)
-                throw new UserNotFoundException(userId.ToString());
+                throw new UserNotFoundException();
 
             var payment = await _repositoryManager.Payment.GetUserFirstActivePayment(user.Id);
             if (payment == null)
@@ -72,7 +72,7 @@ namespace Service
         {
             var user = await _userManager.FindByIdAsync(userId.ToString());
             if (user == null)
-                throw new UserNotFoundException(userId.ToString());
+                throw new UserNotFoundException();
 
             var attendanceRecord = await _repositoryManager.Attendance.CheckAttendanceStatus(userId.ToString());
 
@@ -95,7 +95,7 @@ namespace Service
         {
             var user = await _userManager.FindByIdAsync(userId.ToString());
             if(user is null)
-                throw new UserNotFoundException(userId.ToString());
+                throw new UserNotFoundException();
 
             var attemdance = await _repositoryManager.Attendance.GetAllUserAttendanceAsync(userId.ToString());
 
@@ -110,7 +110,7 @@ namespace Service
         {
             var user = await _userManager.FindByIdAsync(userId.ToString());
             if (user is null)
-                throw new UserNotFoundException(userId.ToString());
+                throw new UserNotFoundException();
 
             var attendance = await _repositoryManager.Attendance.GetUserAttendanceAsync(userId.ToString(), attendanceId);
             if(attendance is null)

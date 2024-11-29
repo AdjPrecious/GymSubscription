@@ -32,6 +32,9 @@ namespace Service.Contracts
 
         Task DeleteUser(string email);
 
-        
+        Task<IdentityResult> ConfirmEmail(ConfirmEmailDto confirmEmailDto);
+
+
+
     }
 }

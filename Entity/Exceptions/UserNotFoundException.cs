@@ -8,7 +8,7 @@ namespace Entity.Exceptions
 {
     public class UserNotFoundException : NotFoundException
     {
-        public UserNotFoundException(string message) : base($"The user with email/name {message} doesn't exist in the database")
+        public UserNotFoundException() : base($"The user with email/name doesn't exist in the database")
         {
         }
     }

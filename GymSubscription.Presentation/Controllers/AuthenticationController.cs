@@ -32,12 +32,30 @@ namespace GymSubscription.Presentation.Controllers
                 return BadRequest(ModelState);
 
             }
-            else
+            try
             {
-               BackgroundJob.Enqueue(() =>  _service.EmailService.AccountEmailAsync(userForRegistrationDto, result.Item2));
+                BackgroundJob.Enqueue(() => _service.EmailService.AccountEmailAsync(userForRegistrationDto, result.Item2));
+            }catch (Exception ex)
+            {
+                return BadRequest(ModelState);
             }
 
-            
+            return StatusCode(201);
+        }
+
+        [HttpGet("ConfirmEmail")]
+        public async Task<IActionResult> ConfirmEmail([FromQuery] ConfirmEmailDto confirmEmailDto)
+        {
+            if(string.IsNullOrEmpty(confirmEmailDto.UserId) || string.IsNullOrEmpty(confirmEmailDto.Token))
+            {
+                return BadRequest(ModelState);
+            } 
+
+            var result = await _service.AuthenticationService.ConfirmEmail(confirmEmailDto);
+            if (!result.Succeeded)
+            {
+                return StatusCode(400);
+            }
 
             return StatusCode(201);
         }

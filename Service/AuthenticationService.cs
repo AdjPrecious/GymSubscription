@@ -19,6 +19,7 @@ using System.Xml.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.WebUtilities;
+using System.Web;
 
 namespace Service
 {
@@ -67,15 +68,30 @@ namespace Service
             return (result, generateEmailConfirmationLink);
         }
 
+        public async Task<IdentityResult> ConfirmEmail(ConfirmEmailDto confirmEmailDto)
+        {
+
+            var decodedTokenAsBytes = WebEncoders.Base64UrlDecode(confirmEmailDto.Token);
+            var decodedToken = Encoding.UTF8.GetString(decodedTokenAsBytes);
+
+            var user = await _userManager.FindByIdAsync(confirmEmailDto.UserId);
+            if (user == null)
+                throw new UserNotFoundException();
+
+            var result = await _userManager.ConfirmEmailAsync(user, decodedToken);
+            return result;
+        }
+
         private async Task<string> GenerateEmailConfirmationLink(User user)
         {
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
-            var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
+            var tokenAsBytes = Encoding.UTF8.GetBytes(token);
+            var encodedToken = WebEncoders.Base64UrlEncode(tokenAsBytes);
 
-            var request = _httpContextAccessor.HttpContext.Request;
+            var request = _httpContextAccessor.HttpContext!.Request;
 
-            var confirmationLink = $"{request.Scheme}://{request.Host}/Account/ConfirmEmail?userId={user.Id}&token={encodedToken}";
+            var confirmationLink = $"{request.Scheme}://{request.Host}/api/Authentication/ConfirmEmail?userId={user.Id}&token={encodedToken}";
 
             return confirmationLink;
         }
@@ -207,7 +223,7 @@ namespace Service
             _user = await _userManager.FindByEmailAsync(email);
 
             if (_user == null)
-                throw new UserNotFoundException(email);
+                throw new UserNotFoundException();
 
             var token = await _userManager.GeneratePasswordResetTokenAsync(_user);
             return token;
@@ -218,7 +234,7 @@ namespace Service
             _user = await _userManager.FindByEmailAsync(passwordResetDto.Email);
 
             if (_user == null)
-                throw new UserNotFoundException(passwordResetDto.Email);
+                throw new UserNotFoundException();
 
             var resetPassword = await _userManager.ResetPasswordAsync(_user, passwordResetDto.Token, passwordResetDto.NewPassword);
 
@@ -244,7 +260,7 @@ namespace Service
         {
             var user = await _userManager.FindByEmailAsync(email);
             if (user == null)
-                throw new UserNotFoundException(email);
+                throw new UserNotFoundException();
 
             var userToMap = _mapper.Map(updateUserDto, user);
             await _userManager.UpdateAsync(userToMap);
@@ -258,7 +274,7 @@ namespace Service
             var users = await _userManager.Users.ToListAsync();
 
             if (users == null)
-                throw new UserNotFoundException("users");
+                throw new UserNotFoundException();
 
            var  userToMap = _mapper.Map<IEnumerable<UserDto>>(users);
 
@@ -270,7 +286,7 @@ namespace Service
         {
             var user = await _userManager.FindByEmailAsync(email);
             if(user == null)
-                throw new UserNotFoundException(email);
+                throw new UserNotFoundException();
             var userToMap = _mapper.Map<UserDto>(user); 
 
             return userToMap;
@@ -280,7 +296,7 @@ namespace Service
         {
             var user = await _userManager.FindByEmailAsync(email);
             if( user == null)
-                throw new UserNotFoundException(email);
+                throw new UserNotFoundException();
 
             await _userManager.DeleteAsync(user);
             

@@ -38,7 +38,7 @@ namespace Service
             {
                 Text = $@" <h1> Welcome, {UserForRegistrationDto.FirstName}</h1>
                             <p>Your account has been successfully created.</p>
-                            <p>Click on the link to confirm email <a>{link}</a>.</p> 
+                            <p>Click on the link to confirm email <a href=""{link}"">{link}</a>.</p> 
                             <p>Thank you for registering with us.</p>
                             <br/>
                             <p> - The Team </p>"
@@ -56,6 +56,7 @@ namespace Service
             }
             catch
             {
+                
                 throw new EmailNotSentException();
             }
             finally  
