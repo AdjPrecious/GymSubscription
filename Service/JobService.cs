@@ -35,7 +35,11 @@ namespace Service
 
                 foreach (var subscription in subscriptions)
                 {
-                    subscription.Status = SubscriptionStatus.Expired;
+                    if(subscription.EndDate == DateTime.UtcNow.AddMinutes(1))
+                    {
+                        subscription.Status = SubscriptionStatus.Expired;
+                    }
+                    
                 }
 
                 await _repositoryManager.SavechagesAsync();
